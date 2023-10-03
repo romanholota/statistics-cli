@@ -1,6 +1,5 @@
 use exitfailure::ExitFailure;
 use std::env;
-use std::process::exit;
 use statistics_cli::Response;
 
 #[tokio::main]
@@ -8,22 +7,12 @@ async fn main() -> Result<(), ExitFailure> {
 
     let args: Vec<String> = env::args().collect();
 
-    let ico = match args.get(1) {
-        Some(val) => val,
-        None => exit(1)
-    };
+    let ico = args.get(1).expect("ICO not found.");
 
     let res = Response::get(ico).await?;
-    let company_name = match res.results.first() {
-        Some(val) => {
-            match val.full_names.first() {
-                Some(name) => name.value.to_string(),
-                None => exit(1)
-            }
-        },
-        None => exit(1)
-    };
-    println!("{}", company_name);
+    let company = res.results.first().expect("Company not found");
+    let company_name = company.full_names.first().expect("Company name not found");
+    println!("{}", company_name.value);
 
     Ok(())
 

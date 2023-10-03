@@ -29,7 +29,7 @@ impl Response {
             ico
         );
 
-        let url = Url::parse(&*url)?;
+        let url = Url::parse(&url)?;
         let res = reqwest::get(url).await?.json::<Response>().await?;
 
         Ok(res)
